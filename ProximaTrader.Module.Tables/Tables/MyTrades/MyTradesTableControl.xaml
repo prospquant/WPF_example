@@ -1,0 +1,101 @@
+﻿<UserControl x:Class="ProximaTrader.Module.Tables.Tables.MyTrades.MyTradesTableControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:lex="http://wpflocalizeextension.codeplex.com"
+             xmlns:local="clr-namespace:ProximaTrader.Settings.TabsClasses;assembly=ProximaTrader.Settings"
+             xmlns:help="clr-namespace:ProximaTrader.WPF.Helpers.Classes_For_Controls;assembly=ProximaTrader.WPF.Helpers"
+             lex:LocalizeDictionary.DesignCulture="ru"
+             lex:ResxLocalizationProvider.DefaultAssembly="ProximaTrader.Styles"
+             lex:ResxLocalizationProvider.DefaultDictionary="Strings"
+			 mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="866">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/ProximaTrader.Styles;component/DataGridStyle.xaml" />
+                <ResourceDictionary Source="/ProximaTrader.Styles;component/MainStyles.xaml" />
+                <ResourceDictionary Source="/ProximaTrader.Styles;component/MenuStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <local:BindingProxy x:Key="proxy" Data="{Binding}" />
+            <CollectionViewSource x:Key="data" 
+								  IsLiveGroupingRequested="True"
+								  IsLiveFilteringRequested="True"
+								  Source="{Binding SelectedTab.DataCollection, UpdateSourceTrigger=PropertyChanged, IsAsync=True}" />
+            <help:CollectGroupViewMarginConverter x:Key="MarginConverter" />
+		</ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Background="{StaticResource MainBackGroundColor}">
+        <DataGrid
+            Grid.Row="1" Grid.ColumnSpan="6"
+            CanUserAddRows="false"
+            RowHeaderWidth="0"
+			HeadersVisibility="All"
+			SelectionUnit="FullRow"
+            GridLinesVisibility="None"
+            AutoGenerateColumns="False"
+            ItemsSource="{Binding Source={StaticResource data}}"
+            SelectedItem="{Binding SelectedTab.SelectedTrade, UpdateSourceTrigger=PropertyChanged, IsAsync=True}"
+            Style="{StaticResource DataGridRowStyle}" AlternationCount="2"
+            Background="{StaticResource MainBackGroundColor}"
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Hidden">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Style="{StaticResource MenuItemStyle1}" 
+                              Header="{lex:Loc common_openChartText}"
+                              IsEnabled="{Binding SelectedTab.IsContextMenuEnabled, UpdateSourceTrigger=PropertyChanged}"
+                              Command="{Binding SelectedTab.OpenChartCommand}"/>
+                    <MenuItem Style="{StaticResource MenuItemStyle1}" 
+                              Header="{lex:Loc common_openOrderEntryText}"
+                              IsEnabled="{Binding SelectedTab.IsContextMenuEnabled, UpdateSourceTrigger=PropertyChanged}"
+                              Command="{Binding SelectedTab.OpenOrderEntryCommand}"/>
+                    <MenuItem Style="{StaticResource MenuItemStyle1}"
+                              ItemsSource="{Binding SelectedTab.SelectedExchanges, UpdateSourceTrigger=PropertyChanged}"
+                              Header="{lex:Loc common_filterByExchangeText}">
+                        <MenuItem.ItemContainerStyle>
+                            <Style TargetType="MenuItem" BasedOn="{StaticResource MenuItemStyle1}">
+                                <Setter Property="IsCheckable" Value="True" />
+                                <Setter Property="StaysOpenOnClick" Value="True" />
+                                <Setter Property="Header" Value="{Binding Value}"/>
+                                <Setter Property="IsChecked" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                            </Style>
+                        </MenuItem.ItemContainerStyle>
+                    </MenuItem>
+                    <MenuItem Style="{StaticResource MenuItemStyle1}"
+                              ItemsSource="{Binding SelectedTab.SelectedAccounts, UpdateSourceTrigger=PropertyChanged}"
+                              Header="{lex:Loc common_filterByAccountText}">
+                        <MenuItem.ItemContainerStyle>
+                            <Style TargetType="MenuItem" BasedOn="{StaticResource MenuItemStyle1}">
+                                <Setter Property="IsCheckable" Value="True" />
+                                <Setter Property="StaysOpenOnClick" Value="True" />
+                                <Setter Property="Header" Value="{Binding Value}"/>
+                                <Setter Property="IsChecked" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                            </Style>
+                        </MenuItem.ItemContainerStyle>
+                    </MenuItem>
+                    <!--<MenuItem Style="{StaticResource MenuItemStyle1}" 
+                              IsEnabled="{Binding SelectedTab.IsContextMenuEnabled, UpdateSourceTrigger=PropertyChanged}"
+                              Header="{lex:Loc common_PropertiesLbl}" />-->
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="1*" IsReadOnly="True" CanUserSort="True" 
+                                    Header="{lex:Loc common_ExchangeLbl}" Binding="{Binding Path=Exchange, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Width="1*" IsReadOnly="True" CanUserSort="True" 
+                                    Header="{lex:Loc common_AccountLbl}" Binding="{Binding Path=Account, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Width="1*" IsReadOnly="True" CanUserSort="True" 
+                                    Header="{lex:Loc common_SymbolLbl}" Binding="{Binding Path=Pair, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Width="1*" IsReadOnly="True" CanUserSort="True" 
+									Header="{lex:Loc common_TimeLbl}" Binding="{Binding Path=Time, StringFormat='{}{0:dd/MM/yyyy HH:mm}', UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Width="1*" IsReadOnly="True" CanUserSort="True" 
+									Header="{lex:Loc common_SideLbl}" Binding="{Binding Path=Side, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Width="1*" IsReadOnly="True" CanUserSort="True" 
+									Header="{lex:Loc common_PriceLbl}" Binding="{Binding Path=Price, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Width="1*" IsReadOnly="True" CanUserSort="True" 
+									Header="{lex:Loc common_AmountLbl}" Binding="{Binding Path=Amount, UpdateSourceTrigger=PropertyChanged}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
+

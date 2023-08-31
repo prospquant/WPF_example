@@ -1,0 +1,161 @@
+﻿<UserControl x:Class="ProximaTrader.Module.Tables.Tables.LogViewer.LogViewerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ProximaTrader.Module.Tables.Tables.LogViewer"
+			 xmlns:lex="http://wpflocalizeextension.codeplex.com"
+             lex:LocalizeDictionary.DesignCulture="ru"
+             lex:ResxLocalizationProvider.DefaultAssembly="ProximaTrader.Styles"
+             lex:ResxLocalizationProvider.DefaultDictionary="Strings"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=local:LogViewerControlViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="450" d:DesignWidth="1200">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/ProximaTrader.Styles;component/DataGridStyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/ProximaTrader.Styles;component/MainStyles.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Background="{StaticResource MainBackGroundColor}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.2*" />
+            <ColumnDefinition Width="1.2*" />
+            <ColumnDefinition Width="1.2*" />
+            <ColumnDefinition Width="1.2*" />
+            <ColumnDefinition Width="1.2*" />
+            <ColumnDefinition Width="0.7*" />
+            <ColumnDefinition Width="1.2*" />
+            <ColumnDefinition Width="1.1*" />
+            <ColumnDefinition Width="1.2*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Margin="5">
+            <TextBlock Style="{StaticResource TextBlockStyle}" Text="{lex:Loc common_ExchangeLbl}" TextAlignment="Left" />
+            <ComboBox 
+                        Foreground="{StaticResource PrimaryText}"
+                        Style="{StaticResource ComboBoxStyle}"
+                        SelectedItem="{Binding Path=SelectedExchange, UpdateSourceTrigger=PropertyChanged}"
+                        ItemsSource="{Binding Path=Exchanges, UpdateSourceTrigger=PropertyChanged}">
+            </ComboBox>
+        </StackPanel>
+        <StackPanel Margin="5" Grid.Column="1">
+            <TextBlock TextAlignment="Left"
+                    Style="{StaticResource TextBlockStyle}"
+                    Text="{lex:Loc common_AccountLbl}"/>
+            <ComboBox 
+                Foreground="{StaticResource PrimaryText}"
+                Style="{StaticResource ComboBoxStyle}"
+                SelectedItem="{Binding Path=SelectedAccount, UpdateSourceTrigger=PropertyChanged}"
+                ItemsSource="{Binding Path=Accounts, UpdateSourceTrigger=PropertyChanged}">
+            </ComboBox>
+        </StackPanel>
+        <StackPanel Margin="5" Grid.Column="2">
+            <TextBlock TextAlignment="Left" Style="{StaticResource TextBlockStyle}" Text="{lex:Loc common_LogLevelLbl}"/>
+            <ComboBox Foreground="{StaticResource PrimaryText}"
+                      Style="{StaticResource ComboBoxStyle}"
+                      SelectedItem="{Binding Path=SelectedLogLevel, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding Path=LogLevels, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+        <StackPanel Margin="5" Grid.Column="3">
+            <TextBlock TextAlignment="Left"
+                    Style="{StaticResource TextBlockStyle}"
+                    Text="{lex:Loc common_DateFromLbl}"/>
+            <DatePicker Style="{StaticResource MainDatePickerStyle}"
+                        SelectedDate="{Binding DateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+        <StackPanel Margin="5" Grid.Column="4">
+            <TextBlock TextAlignment="Left"
+                    Style="{StaticResource TextBlockStyle}"
+                    Text="{lex:Loc common_DateToLbl}"/>
+            <DatePicker Style="{StaticResource MainDatePickerStyle}"
+                        SelectedDate="{Binding DateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+        <StackPanel Margin="5" Grid.Column="5">
+            <TextBlock TextAlignment="Left"
+                    Style="{StaticResource TextBlockStyle}"
+                    Text="{lex:Loc common_LinesLbl}"/>
+            <TextBox Margin="0" IsReadOnly="True" IsReadOnlyCaretVisible="False" Foreground="{StaticResource ForegroundTextBlock}"
+                     HorizontalContentAlignment="Left" Height="23" VerticalContentAlignment="Center"
+                     Style="{StaticResource MainGreyLogTextBox}"
+                     Text="{Binding LogRecords.Count, Mode=OneWay}"/>
+        </StackPanel>
+        <StackPanel Margin="5" Grid.Column="6">
+            <TextBlock Style="{StaticResource TextBlockStyle}" Text="{lex:Loc common_SearchLbl}" TextAlignment="Left"/>
+            <TextBox Height="23" VerticalContentAlignment="Center"
+                     Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource MainGreyLogTextBox}" />
+        </StackPanel>
+        <StackPanel Margin="5" Grid.Column="7">
+            <TextBlock Grid.Column="7" Style="{StaticResource TextBlockStyle}"
+                       HorizontalAlignment="Left" VerticalAlignment="Center" Text="{lex:Loc common_ViewLbl}"/>
+            <ComboBox Foreground="{StaticResource PrimaryText}"
+                      Style="{StaticResource ComboBoxStyle}"
+                      SelectedIndex="{Binding Path=SelectedTabPageIndex, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding Path=ViewTypes, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+        <Border Grid.Column="8" Style="{StaticResource BorderArea}" Visibility="Collapsed">
+            <StackPanel VerticalAlignment="Center">
+				<RadioButton Content="{lex:Loc common_TableLbl}"
+                             IsChecked="{Binding IsTableView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource MainRadioButtonStyle}" />
+				<RadioButton Content="{lex:Loc common_TextLbl}" 
+                             IsChecked="{Binding IsTextView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource MainRadioButtonStyle}" />
+            </StackPanel>
+        </Border>
+        <StackPanel Grid.Column="8" VerticalAlignment="Bottom">
+            <Button Style="{StaticResource MainGreyButton}" Width="Auto"
+                    Content="{lex:Loc common_SaveLogLbl}" 
+                    Command="{Binding SaveLogFileCommand}"/>
+			<Button Style="{StaticResource MainGreyButton}" Width="Auto"
+                    IsEnabled="False" Visibility="Collapsed"
+                    Content="{lex:Loc common_SendSupportLbl}" />
+        </StackPanel>
+        <TabControl Grid.ColumnSpan="10" Grid.Row="2" 
+                    SelectedIndex="{Binding SelectedTabPageIndex, UpdateSourceTrigger=PropertyChanged}"
+                    Background="{StaticResource MainBackGroundColor}">
+            <TabItem Visibility="Collapsed" >
+                <DataGrid 
+                    Background="{StaticResource MainBackGroundColor}"
+                    CanUserAddRows="false"
+                    GridLinesVisibility="None"
+                    RowHeaderWidth="0"
+                    AutoGenerateColumns="False"
+                    ItemsSource="{Binding LogRecords}"
+                    Margin="0"
+                    Style="{StaticResource DataGridRowStyle}"
+                    AlternationCount="2">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="0.15*" Header="{lex:Loc common_DateLbl}" IsReadOnly="True" 
+                                            Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yyyy HH:mm:ss\}, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTextColumn Width="0.1*" Header="{lex:Loc common_LogLevelLbl}" IsReadOnly="True" 
+                                            Binding="{Binding Path=LogLevel, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTextColumn Width="0.12*" Header="{lex:Loc common_AccountLbl}" IsReadOnly="True" 
+                                            Binding="{Binding Path=Account, UpdateSourceTrigger=PropertyChanged, TargetNullValue=''}"/>
+                        <DataGridTextColumn Width="0.1*" Header="{lex:Loc common_ExchangeLbl}" IsReadOnly="True" 
+                                            Binding="{Binding Path=Exchange, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTextColumn Width="0.3*" Header="{lex:Loc common_EventLbl}" IsReadOnly="True" 
+                                            Binding="{Binding Path=Event, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTextColumn Width="0.4*" Header="{lex:Loc common_SystemMessageLbl}" IsReadOnly="True" 
+                                            ToolTipService.ToolTip="{Binding SystemMessageSingleLine}"
+                                            Binding="{Binding SystemMessageSingleLine, UpdateSourceTrigger=PropertyChanged, TargetNullValue=''}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Visibility="Collapsed">
+                <TextBox Margin="2" Style="{StaticResource MainGreyTextBox}" 
+                         VerticalScrollBarVisibility="Visible"
+                         IsReadOnly="True" IsReadOnlyCaretVisible="True"
+                         Text="{Binding LogText, UpdateSourceTrigger=PropertyChanged}"/>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

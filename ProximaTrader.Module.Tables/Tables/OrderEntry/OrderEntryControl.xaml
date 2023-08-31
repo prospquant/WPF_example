@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="ProximaTrader.Module.Tables.Tables.OrderEntry.OrderEntryControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True" 
+             xmlns:help="clr-namespace:ProximaTrader.WPF.Helpers.Classes_For_Controls;assembly=ProximaTrader.WPF.Helpers"
+			 xmlns:helper="clr-namespace:ProximaTrader.Infrastructure.Helpers_WPF;assembly=ProximaTrader.Infrastructure"
+             xmlns:mdm="clr-namespace:ProximaTrader.Managers.Core.InstanceClasses;assembly=ProximaTrader.Managers"
+             xmlns:local="clr-namespace:ProximaTrader.Module.Tables.Tables.OrderEntry"
+			 xmlns:lex="http://wpflocalizeextension.codeplex.com"
+             lex:LocalizeDictionary.DesignCulture="ru"
+             lex:ResxLocalizationProvider.DefaultAssembly="ProximaTrader.Styles"
+             lex:ResxLocalizationProvider.DefaultDictionary="Strings"
+             d:DataContext="{d:DesignInstance Type=local:OrderEntryControlViewModel, IsDesignTimeCreatable=False}"
+             mc:Ignorable="d" 
+             d:DesignHeight="320" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/ProximaTrader.Styles;component/MainStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <help:ConverterOrderTypeToVisibility x:Key="ConverterOrderTypeToVisibility"/>
+            <help:ConverterOrderTypeToPriceVisibility x:Key="ConverterOrderTypeToPriceVisibility" />
+            <help:ConverterOrderTypeToMarketTextVisibility x:Key="MarketTextVisibility" />
+            <help:OrderTypeToPriceConverter x:Key="OrderTypeToPriceConverter" />
+            <help:SelectedFieldsToEnabledConverter x:Key="SelectedFieldsToEnabledConverter" />
+		</ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Background="{StaticResource MainBackGroundColor}">
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+			<StackPanel Grid.ColumnSpan="2" Margin="5">
+				<TextBlock Style="{StaticResource TextBlockStyle}" HorizontalAlignment="Left" 
+                           Foreground="{StaticResource ForegroundTextBlock}" Text="{lex:Loc common_ExchangeSymbol}"/>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<TextBlock Text="{Binding SelectedExchangeAndSymbol, UpdateSourceTrigger=PropertyChanged}" 
+						   Style="{StaticResource TextBlockArea}" Margin="0" Height="23"
+						   Background="{StaticResource ButtonBackground}" 
+						   Foreground="{StaticResource PrimaryText}" />
+					<ToggleButton Grid.Column="1" Margin="0" Command="{Binding OpenSymbolFilterCommand}" Height="23"
+								  Template="{StaticResource ToggleButtonTemplate}"/>
+					<Popup StaysOpen="False" PopupAnimation="Scroll" Placement="Bottom"
+							IsOpen="{Binding IsOpenSymbolFilter, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+						<helper:ExchangeSymbolFilter DataContext="{Binding ViewModel}" />
+					</Popup>
+				</Grid>
+			</StackPanel>
+
+            <StackPanel Grid.Row="1" Margin="5">
+				<TextBlock Style="{StaticResource TextBlockStyle}" HorizontalAlignment="Left" Text="{lex:Loc common_AccountLbl}"/>
+                <ComboBox Style="{StaticResource ComboBoxStyle}" Foreground="{StaticResource PrimaryText}"
+                          SelectedItem="{Binding Path=SelectedAccount, UpdateSourceTrigger=PropertyChanged}"
+                          ItemsSource="{Binding Path=Accounts, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="1" Margin="5">
+                <TextBlock Style="{StaticResource TextBlockStyle}" HorizontalAlignment="Left" Text="{lex:Loc common_TimeInForceLbl}"/>
+                <ComboBox Foreground="{StaticResource PrimaryText}" Style="{StaticResource ComboBoxStyle}"
+                          SelectedValue="{Binding SelectedTimeInForce, UpdateSourceTrigger=PropertyChanged}"
+                          ItemsSource="{Binding Source={x:Static mdm:MarketDataManager.Instance}, Path=SupportedOrderTypes, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="2" Margin="5"
+                        Visibility="{Binding SelectedOrderType, UpdateSourceTrigger=PropertyChanged, 
+                        Converter={StaticResource ConverterOrderTypeToVisibility}}">
+                <TextBlock Style="{StaticResource TextBlockStyle}" HorizontalAlignment="Left" Text="{lex:Loc common_TriggerPriceLbl}" />
+                <ContentControl Margin="1">
+                    <helper:UpDownControl DataContext="{Binding LimitPriceViewModel}" />
+                </ContentControl>
+            </StackPanel>
+
+            <StackPanel Grid.Column="0" Grid.Row="3" Margin="5">
+                <TextBlock Style="{StaticResource TextBlockStyle}" HorizontalAlignment="Left" Text="{lex:Loc common_PriceLbl}"/>
+                <ContentControl Margin="1" Visibility="{Binding SelectedOrderType, 
+                        UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ConverterOrderTypeToPriceVisibility}}">
+                    <helper:UpDownControl DataContext="{Binding PriceViewModel}" />
+                </ContentControl>
+                <TextBox Text="Market" Style="{StaticResource MainGreyTextBox}" Height="24" 
+                         Visibility="{Binding SelectedOrderType, Converter={StaticResource MarketTextVisibility}}"
+                         VerticalContentAlignment="Center" IsEnabled="False" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="3" Margin="5">
+				<TextBlock Style="{StaticResource TextBlockStyle}" HorizontalAlignment="Left" Text="{lex:Loc common_AmountLbl}"/>
+				<ContentControl Margin="1">
+                    <helper:UpDownControl DataContext="{Binding AmountViewModel}" />
+                </ContentControl>
+			</StackPanel>
+
+            <StackPanel Grid.Row="2" Margin="5">
+                <TextBlock Style="{StaticResource TextBlockStyle}" HorizontalAlignment="Left" Text="{lex:Loc common_OrderTypeLbl}"/>
+                <ComboBox Foreground="{StaticResource PrimaryText}" Style="{StaticResource ComboBoxStyle}" ItemsSource="{Binding OrderTypes}"
+                          SelectedItem="{Binding SelectedOrderType, UpdateSourceTrigger=PropertyChanged}" Height="22" />
+            </StackPanel>
+            
+            <UniformGrid Columns="2" Rows="1" Grid.Row="4" Grid.ColumnSpan="2" Height="30">
+                <Button Command="{Binding PlaceOrderCommand}" CommandParameter="buy" Margin="5 0"
+                        Style="{StaticResource BuyButtonStye}" Content="{lex:Loc common_BUY}"/>
+                <Button Command="{Binding PlaceOrderCommand}" CommandParameter="sell" Margin="5 0"
+                        Style="{StaticResource SellButtonStye}" Content="{lex:Loc common_SELL}"/>
+            </UniformGrid>
+        </Grid>
+    </Grid>
+</UserControl>

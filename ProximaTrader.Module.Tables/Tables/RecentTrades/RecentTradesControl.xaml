@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="ProximaTrader.Module.Tables.Tables.RecentTrades.RecentTradesControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:lex="http://wpflocalizeextension.codeplex.com"
+             xmlns:helper="clr-namespace:ProximaTrader.Infrastructure.Helpers_WPF;assembly=ProximaTrader.Infrastructure"
+             xmlns:local="clr-namespace:ProximaTrader.Module.Tables.Tables.RecentTrades"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d"
+             lex:LocalizeDictionary.DesignCulture="ru"
+             lex:ResxLocalizationProvider.DefaultAssembly="ProximaTrader.Styles"
+             lex:ResxLocalizationProvider.DefaultDictionary="Strings"
+             d:DataContext="{d:DesignInstance Type=local:RecentTradesControlViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="450" d:DesignWidth="600">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/ProximaTrader.Styles;component/DataGridStyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/ProximaTrader.Styles;component/MainStyles.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Background="{StaticResource MainBackGroundColor}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*" />
+            <ColumnDefinition Width="0.8*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel VerticalAlignment="Center" Margin="0 10 0 0">
+            <TextBlock Style="{StaticResource TextBlockStyle}"
+					   Foreground="{StaticResource ForegroundTextBlock}"
+					   Text="{lex:Loc common_ExchangeSymbol}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10 10 0 0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding SelectedExchangeAndSymbol, UpdateSourceTrigger=PropertyChanged}" 
+						   Style="{StaticResource TextBlockArea}" Margin="0"
+						   Background="{StaticResource ButtonBackground}" 
+						   Foreground="{StaticResource PrimaryText}"
+						   TextAlignment="Center" />
+                <ToggleButton Grid.Column="1" Margin="0" Command="{Binding OpenSymbolFilterCommand}"
+							  Template="{StaticResource ToggleButtonTemplate}"/>
+
+                <Popup StaysOpen="False" PopupAnimation="Scroll" Placement="Bottom"
+							IsOpen="{Binding IsOpenSymbolFilter, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                    <helper:ExchangeSymbolFilter DataContext="{Binding ViewModel}" />
+                </Popup>
+            </Grid>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="10 0"> 
+            <Button Style="{StaticResource MainGreyButton}" 
+                    Content="{lex:Loc common_ClearLbl}" HorizontalAlignment="Right"
+                    Command="{Binding ClearTradesCommand}"/>
+        </StackPanel>
+        <DataGrid Margin="10"
+			Background="{StaticResource MainBackGroundColor}"
+            Grid.ColumnSpan="5" Grid.Row="2" 
+            CanUserAddRows="false"
+            RowHeaderWidth="0"
+			HeadersVisibility="All"
+			SelectionUnit="FullRow"
+            GridLinesVisibility="None"
+            AutoGenerateColumns="False"
+			HorizontalScrollBarVisibility="Hidden"
+			VerticalScrollBarVisibility="Auto"
+			ItemsSource="{Binding Trades}"
+            Style="{StaticResource DataGridRowStyle}"
+            AlternationCount="2">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="120" Header="{lex:Loc common_DateLbl}"
+                                    Binding="{Binding Path=Time, StringFormat=\{0:dd.MM.yyyy\}, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Width="120" Header="{lex:Loc common_TimeLbl}"
+                                    Binding="{Binding Path=Time, StringFormat=\{0:HH:mm:ss\}, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Width="100" Header="{lex:Loc common_SideLbl}"
+                                    Binding="{Binding Path=Side, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Width="140" Header="{lex:Loc common_PriceLbl}" 
+                                    Binding="{Binding Path=Price, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Width="*" Header="{lex:Loc common_AmountLbl}" 
+                                    Binding="{Binding Path=Amount, UpdateSourceTrigger=PropertyChanged, TargetNullValue=''}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
