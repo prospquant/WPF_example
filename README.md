@@ -11,13 +11,23 @@ This is only demo part of WPF controls and doesn't have any usage
 ```Features```
 
 OrdersTableControl: View control for displaying orders in the terminal.
+
 PositionsTableControl: View control for showing current positions.
+
 StopOrdersTableControl: A control for stop orders.
+
 MyTradesTableControl: To show personal trade history.
+
 BalanceTableControl: A control to display current balance.
+
 LogViewerControl: For viewing system logs.
+
 RecentTradesControl: To display recent trades in the market.
+
 MarketAnalyzerControl: For analyzing current market data.
+
 OrderEntryControl: A control to place new orders.
+
 HotkeySettingsControl: To manage and set up hotkeys.
+
 MainSettingsControl: The main settings control for the terminal.
